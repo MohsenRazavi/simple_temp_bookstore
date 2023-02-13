@@ -8,17 +8,28 @@
 {% endblock %}
 
 {% block page-name %}
-    Basij Book Store
+    Book Store
 {% endblock %}
 {% block all_money %}
-    Total sell : {{ sum_of_money }}
+    {% if user.is_authenticated %}
+        Total sell : {{ sum_of_money }}
+    {% endif %}
 {% endblock %}
 
 {% block page-content %}
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">
-        Add
-    </button>
+    {% if user.is_authenticated %}
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">
+            Add
+        </button>
+        <a href="{% url 'logout' %}" type="button" class="btn btn-danger">
+            Logout
+        </a>
+    {% else %}
+        <a href="{% url 'login' %}" type="button" class="btn btn-primary">
+            Login
+        </a>
+    {% endif %}
 
     <!-- Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -40,7 +51,7 @@
     </div>
     <div class="row mt-3">
         {% for book in books %}
-            <div class="card mx-2 shadow" style="width: 18rem;">
+            <div class="card m-2 shadow" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Name : {{ book.name }}</h5>
                     <ul class="list-group list-group-flush">
@@ -57,9 +68,11 @@
                             {% endif %}
                         </li>
                     </ul>
-                    <div class="row">
-                        <a href="{% url 'delete' pk=book.pk %}" class="btn btn-danger mt-3">Delete</a>
-                    </div>
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <a href="{% url 'delete' pk=book.pk %}" class="btn btn-danger mt-3">Delete</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
